@@ -1,4 +1,3 @@
-print("Michael is super cool")
-print("thanh's edit")
-print("Visharlya")
+n = 100 #number of neutrons
+time_step = 1 
 
