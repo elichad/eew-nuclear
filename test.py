@@ -1,1 +1,1 @@
-print("Gutentag")
+print("Michael is super cool")
