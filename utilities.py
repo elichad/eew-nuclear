@@ -1,5 +1,6 @@
 import random
 import math
+import pandas as pd
 
 n = 100 #number of neutrons
 time_step = 1 
@@ -26,6 +27,17 @@ def move(mean_free_path, x, y, angle):
 #angle = generate_random_angle()
 #path = find_mean_free_path(705*(10**(-24)), 19.1*(10**(-3)), 23.5*(10**(-2)))
 #print(move(path, 0, 0, angle))
+def choose_material(df):
+    material = input("What material do you want to use?")    
+    fission, elastic, capture, total = select_material(material,df)
+    return(fission, elastic, capture, total)
+    
+def select_material(material,df):
+    fission = df.loc[[material],['fission']]
+    elastic = df.loc[[material],['elastic']]
+    capture = df.loc[[material],['capture']]
+    total = df.loc[[material],['total']]  
+    return [fission, elastic, capture, total]
 
 def is_outside(radius, x, y): #checks neutron has not escpaed
     if math.sqrt(x*x + y*y) > radius:

@@ -4,6 +4,9 @@ import math
 from utilities import *
 import matplotlib.pyplot as plt
 import numpy as np
+
+df = pd.read_excel('Nuclear Materials Datasheet.xlsx')
+df = df.set_index('Nuclei')
 ##Define functions
 
 ##Main Program
@@ -22,6 +25,14 @@ start_energy = 0.025 #eV
 energies = []
 for i  in range(n):
     energies.append(start_energy)
+    
+
+fission, capture, elastic, total = choose_material(df)
+print(fission)
+print(capture)
+print(elastic)
+print(total)  
+       
     
 #Material
 U235 = {"fission":590, \
@@ -73,9 +84,6 @@ plt.xticks(np.arange(1, 5, 1))
 plt.ylabel("Reactivities")
 plt.xlabel("Number of time steps")
 plt.show()
-
-        
-    
     
     
     
