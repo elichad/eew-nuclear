@@ -2,6 +2,8 @@
 import random
 import math
 from utilities import *
+df = pd.read_excel('Nuclear Materials Datasheet.xlsx')
+df = df.set_index('Nuclei')
 ##Define functions
 
 ##Main Program
@@ -45,7 +47,7 @@ print(path_length)
 #        energies.pop(positions.index(neutron))
 
 
-n_steps = find_number_of_steps(time_step, path_length, start_energy, 1.67e-27) #nanoseconds, cm, eV, mass of a neutron
+"""n_steps = find_number_of_steps(time_step, path_length, start_energy, 1.67e-27) #nanoseconds, cm, eV, mass of a neutron
 for i in range(len(positions)):
     for x in range(n_steps):
         angle = generate_random_angle()
@@ -60,8 +62,12 @@ for i in range(len(positions)):
             pass
         elif event == (3) or isOutside(0.5, current_pos[0], current_pos[1]) == True: #Capture
             positions.pop(i)
-            energies.pop(i)
-        
+            energies.pop(i)"""
+fission, capture, elastic, total = choose_material(df)
+print(fission)
+print(capture)
+print(elastic)
+print(total)  
     
     
     
