@@ -43,14 +43,13 @@ print(path_length)
 #    else:#Capture
 #        positions.remove(neutron)
 #        energies.pop(positions.index(neutron))
-
+before = len(positions)
 
 n_steps = find_number_of_steps(time_step, path_length, start_energy, 1.67e-27) #nanoseconds, cm, eV, mass of a neutron
 for i in range(len(positions)):
     for x in range(n_steps):
         angle = generate_random_angle()
         current_pos = move(path_length, positions[i][0], positions[i][1], angle)
-        print(current_pos)
         positions[i] = current_pos
         event = select_event(start_energy, 590, 15, 100, 705)
         if event == (1):#Fission
@@ -58,10 +57,14 @@ for i in range(len(positions)):
             positions.append(positions[i])
         elif event == (2):#Movement
             pass
-        elif event == (3) or isOutside(0.5, current_pos[0], current_pos[1]) == True: #Capture
+        elif event == (3) or isOutside(0.5, current_pos[0], current_pos[1]): #Capture
             positions.pop(i)
             energies.pop(i)
-        
+            break
+
+after = len(positions)
+reactivity = after/before
+print(reactivity)
     
     
     
