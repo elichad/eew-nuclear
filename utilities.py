@@ -70,12 +70,15 @@ def select_event(energy, fission, elastic, capture, total): #classifies interact
             return 3
         
 #print(select_event(0.025, 590, 15, 100, 705))
-
-def find_number_of_steps(time_step, mean_free_path, energy, mass):
+def find_velocity(energy, mass):
     velocity = math.sqrt(2*energy/mass) #using KE equation
-    time_for_one_step = mean_free_path/velocity #using speed = distance x time
-    number_of_steps = time_step/time_for_one_step
-    return(int(number_of_steps))
+    return velocity
+    
+#def find_number_of_steps(time_step, mean_free_path, energy, mass):
+#    velocity = math.sqrt(2*energy/mass) #using KE equation
+#    time_for_one_step = mean_free_path/velocity #using speed = distance x time
+#    number_of_steps = time_step/time_for_one_step
+#    return(int(number_of_steps))
 
 def find_mean_free_path(microscopic_cross_section, density, atomic_mass): #using moderation equations
     atomic_number_density = (density * 6.023 * (10**23))/atomic_mass
