@@ -11,38 +11,16 @@ radius = 5 #radius of nucleus
 energy = 0.025
 properties = [] #list of properties of materials
 mass = 1.67e-27 #mass of neutron (kg)
+new_xcoordinate = 0
+new_ycoordinate = 0
 
 def generate_random_angle():
     angle = random.uniform(0, 2*math.pi) #in radians
     return angle
 
 def move(mean_free_path, x, y, angle):
-    if angle > math.pi and angle < 3/2 * math.pi: #-ve x, -ve y
-        new_xcoordinate = x - mean_free_path*math.sin(angle)
-        new_ycoordinate = y - mean_free_path*math.cos(angle)
-    elif angle > 3/2 * math.pi: #-ve x, +ve y
-        new_xcoordinate = x - mean_free_path*math.sin(angle)
-        new_ycoordinate = y + mean_free_path*math.cos(angle)
-    elif angle == math.pi: #directly down
-        new_xcoordinate = x
-        new_ycoordinate = y - mean_free_path
-    elif angle == 2*math.pi or angle == 0: #directly up
-        new_xcoordinate = x
-        new_ycoordinate = y + mean_free_path
-    elif angle == 1/2 * math.pi: #directly to the right
-        new_xcoordinate = x + mean_free_path
-        new_ycoordinate = y
-    elif angle == 3/2 * math.pi: #directly to the left
-        new_xcoordinate = x - mean_free_path
-        new_ycoordinate = y
-    elif angle < math.pi and angle > 1/2 * math.pi: #+ve x, -ve y
-        new_xcoordinate = x + mean_free_path*math.sin(angle)
-        new_ycoordinate = y - mean_free_path*math.cos(angle)
-    elif angle < 1/2 * math.pi: #+ve x, +ve y
-        new_xcoordinate = x + mean_free_path*math.sin(angle)
-        new_ycoordinate = y + mean_free_path*math.cos(angle)
-    else:
-        return (0, 0)
+    new_xcoordinate = x - mean_free_path * math.sin(angle)
+    new_ycoordinate = y + mean_free_path * math.cos(angle)
     return(new_xcoordinate, new_ycoordinate)
     
 #angle = generate_random_angle()
@@ -71,7 +49,8 @@ def select_event(energy, fission, elastic, capture, total): #classifies interact
         
 #print(select_event(0.025, 590, 15, 100, 705))
 def find_velocity(energy, mass):
-    velocity = math.sqrt(2*energy/mass) #using KE equation
+    joules = energy * 1.6e-19
+    velocity = math.sqrt(2*joules/mass) #using KE equation
     return velocity
     
 #def find_number_of_steps(time_step, mean_free_path, energy, mass):
