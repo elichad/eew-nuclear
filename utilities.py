@@ -56,7 +56,7 @@ def is_outside(radius, x, y): #checks neutron has not escpaed
         return(False)
     
 def select_event(energy, fission, elastic, capture, total): #classifies interaction dependent on energy and prob
-    if energy > 2000000:
+    if energy > 1000000:
         return 2
     elif energy < 0.001:
         return 3
