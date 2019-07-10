@@ -50,7 +50,7 @@ for j in range(n_time_steps):
             angle = generate_random_angle()
             current_pos = move(path_length, positions[i][0], positions[i][1], angle)
             positions[i] = current_pos
-            event = select_event(start_energy, 590, 15, 100, 705)
+            event = select_event(energies[i], 590, 15, 100, 705)
             if event == (1):#Fission
                 energies.append(2e6)
                 energies[i] = 2e6
