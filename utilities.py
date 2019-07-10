@@ -43,7 +43,7 @@ def move(mean_free_path, x, y, angle):
         new_ycoordinate = y + mean_free_path*math.cos(angle)
     else:
         return (0, 0)
-    return(new_xcoordinate, new_ycoordinate)
+    return new_xcoordinate, new_ycoordinate
     
 #angle = generate_random_angle()
 #print(move(1.73, 0, 0, angle))
