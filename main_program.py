@@ -24,7 +24,7 @@ for i  in range(n):
 U235 = {"fission":590, \
             "elastic":15, \
             "capture":100,\
-            "density":19.1, \
+            "density":0.0191,\
             "mass":235e-3,\
             "microscopic_cross_section":705e-24}
 
