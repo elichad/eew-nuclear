@@ -28,9 +28,8 @@ U235 = {"fission":590, \
             "mass":235e-3,\
             "microscopic_cross_section":705e-24}
 
-path_length = find_mean_free_path(U235["microscopic_cross_section"], \
-                                  U235["density"], \
-                                  U235["mass"])
+path_length = find_mean_free_path(705e-24, 0.0191, 235e-3) #(microscopic_cross_section, density kg/cm^3, mass of material)
+print(path_length)
 #for neutron in positions:
 #    #Movement
 #    angle = generate_random_angle()
@@ -46,13 +45,12 @@ path_length = find_mean_free_path(U235["microscopic_cross_section"], \
 #        energies.pop(positions.index(neutron))
 
 
-n_steps = find_number_of_steps(time_step, path_length, start_energy, U235["mass"])
+n_steps = find_number_of_steps(time_step, path_length, start_energy, 1.67e-27) #nanoseconds, cm, eV, mass of a neutron
 for i in range(len(positions)):
     for x in range(n_steps):
         angle = generate_random_angle()
-        print(positions[i])
-        print(path_length, positions[i][0], positions[i][1], angle)
         current_pos = move(path_length, positions[i][0], positions[i][1], angle)
+        print(current_pos)
         positions[i] = current_pos
         event = select_event(start_energy, 590, 15, 100, 705)
         if event == (1):#Fission
@@ -60,7 +58,7 @@ for i in range(len(positions)):
             positions.append(positions[i])
         elif event == (2):#Movement
             pass
-        else:#Capture
+        elif event == (3) or isOutside(0.5, current_pos[0], current_pos[1]) == True: #Capture
             positions.pop(i)
             energies.pop(i)
         

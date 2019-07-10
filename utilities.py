@@ -43,10 +43,11 @@ def move(mean_free_path, x, y, angle):
         new_ycoordinate = y + mean_free_path*math.cos(angle)
     else:
         return (0, 0)
-    return new_xcoordinate, new_ycoordinate
+    return(new_xcoordinate, new_ycoordinate)
     
 #angle = generate_random_angle()
-#print(move(1.73, 0, 0, angle))
+#path = find_mean_free_path(705*(10**(-24)), 19.1*(10**(-3)), 23.5*(10**(-2)))
+#print(move(path, 0, 0, angle))
 
 def is_outside(radius, x, y): #checks neutron has not escpaed
     if math.sqrt(x*x + y*y) > radius:
@@ -81,7 +82,7 @@ def find_mean_free_path(microscopic_cross_section, density, atomic_mass): #using
     mean_free_path = 1/(microscopic_cross_section * atomic_number_density)
     return mean_free_path
 
-print(find_mean_free_path(705*(10**(-24)), 19.1*(10**(-3)), 23.5*(10**(-2))))
+#print(find_mean_free_path(705*(10**(-24)), 19.1*(10**(-3)), 23.5*(10**(-2))))
 #print(find_number_of_steps(1e-9, 1.73, 0.025, mass))
 #print(is_outside(5, 5, 5))
     
