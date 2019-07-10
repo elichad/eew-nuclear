@@ -6,10 +6,10 @@ from utilities import *
 
 ##Main Program
 n = 100 #number of neutrons
-time_step = 1 #nanosecond
+time_step = 1e-9 #nanosecond
 
 #Create position list
-start_pos = 0, 0, 0 #x, y, t
+start_pos = 0, 0 #x, y
 positions = []
 for i  in range(n):
     positions.append(start_pos)
@@ -44,26 +44,25 @@ path_length = find_mean_free_path(U235["microscopic_cross_section"], \
 #    else:#Capture
 #        positions.remove(neutron)
 #        energies.pop(positions.index(neutron))
-        
+
+
+n_steps = find_number_of_steps(time_step, path_length, start_energy, U235["mass"])
 for i in range(len(positions)):
-    angle = generate_random_angle()
-    print(path_length, positions[i][0], positions[i][1], angle)
-    current_pos = move(path_length, positions[i][0], positions[i][1], angle)
-    print(positions[i][0])
-    print(positions[i][1])
-    print(current_pos[0])
-    print(current_pos[1])
-    positions[i][0] = int(current_pos[0])
-    positions[i][1] = int(current_pos[1])
-    event = select_event(start_energy, 590, 15, 100, 705)
-    if event == (1):#Fission
-        energies.append(energies[i])
-        positions.append(positions[i])
-    elif event == (2):#Movement
-        pass
-    else:#Capture
-        positions.pop(i)
-        energies.pop(i)
+    for x in range(n_steps):
+        angle = generate_random_angle()
+        print(positions[i])
+        print(path_length, positions[i][0], positions[i][1], angle)
+        current_pos = move(path_length, positions[i][0], positions[i][1], angle)
+        positions[i] = current_pos
+        event = select_event(start_energy, 590, 15, 100, 705)
+        if event == (1):#Fission
+            energies.append(energies[i])
+            positions.append(positions[i])
+        elif event == (2):#Movement
+            pass
+        else:#Capture
+            positions.pop(i)
+            energies.pop(i)
         
     
     
