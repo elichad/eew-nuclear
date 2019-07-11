@@ -7,7 +7,13 @@ import numpy as np
 
 df = pd.read_excel('Nuclear Materials Datasheet.xlsx')
 df = df.set_index('Nuclei')
+
+number_of_shells = 2
+core_materials = ['U235', 'Fe56']
+shell_radius = [5, 15]
+current_shell_var = 0
 ##Define functions
+#print(df)
 
 ##Main Program
 n = 10 #initial number of neutrons
@@ -27,26 +33,19 @@ for i  in range(n):
     angles.append(0)
 
 
-fission, capture, elastic, total = choose_material(df)
+fission, capture, elastic, total, density, atomic_mass = choose_material(df,core_materials,current_shell_var)
 print(fission)
 print(capture)
 print(elastic)
 print(total)  
-       
-    
-#Material
-U235 = {"fission":590, \
-            "elastic":15, \
-            "capture":100,\
-            "density":0.0191,\
-            "mass":235e-3,\
-            "microscopic_cross_section":705e-24}
+print(density)
 
-path_length = find_mean_free_path(U235["microscopic_cross_section"], U235["density"], U235["mass"])#(microscopic_cross_section, density kg/cm^3, mass of material)
+#Material
+microscopic_cross_section = total * 10**-24
+path_length = find_mean_free_path(microscopic_cross_section, density, atomic_mass)#(microscopic_cross_section, density kg/cm^3, mass of material)
 print(path_length)
-n_time_steps = 10000
+n_time_steps = 10
 reactivities = []
-not_reverse_indices_to_remove = []
 
 #n_steps = find_number_of_steps(time_step, path_length, start_energy, 1.67e-27) #nanoseconds, cm, eV, mass of a neutron
 for j in range(n_time_steps):
@@ -68,11 +67,11 @@ for j in range(n_time_steps):
             current_pos = move(path_length, positions[i][0], positions[i][1], angle)
             positions[i] = current_pos
             event = select_event(energies[i], 590, 15, 100, 705)
-            if event == (3) or is_outside(0.08, current_pos[0], current_pos[1]):#Fission
+            if event == (3) or current_shell(current_pos[0], current_pos[1], current_shell_var,number_of_shells,shell_radius)==-1:
                 not_reverse_indices_to_remove.append(i)
                 break
             elif event == (2):#Movement
-                energies[i] = calculate_energy(U235["mass"]/avogadro, angle, angles[i], energies[i])
+                energies[i] = calculate_energy(atomic_mass/avogadro, angle, angles[i], energies[i])
                 angles[i] = angle
             elif event == 1: #Capture
                 energies.append(2e6)
@@ -90,12 +89,9 @@ for j in range(n_time_steps):
     reactivity = after/before
     reactivities.append(reactivity)
 
+print("reactivities - ", reactivities)
 plt.plot(range(n_time_steps), reactivities)
 #plt.xticks(np.arange(1, 5, 1)) 
 plt.ylabel("Reactivities")
 plt.xlabel("Number of time steps")
 plt.show()
-    
-    
-    
-    

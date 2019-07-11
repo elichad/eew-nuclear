@@ -1,7 +1,9 @@
 import random
 import math
 import pandas as pd
-
+df = pd.read_excel('Nuclear Materials Datasheet.xlsx')
+df = df.set_index('Nuclei')
+core_materials = ['U235', 'Fe56']
 n = 100 #number of neutrons
 time_step = 1 
 start_pos = (0,0) #starting position
@@ -13,7 +15,7 @@ properties = [] #list of properties of materials
 mass = 1.67e-27 #mass of neutron (kg)
 new_xcoordinate = 0
 new_ycoordinate = 0
-
+current_shell_var = 0
 def generate_random_angle():
     angle = random.uniform(0, 2*math.pi) #in radians
     return angle
@@ -33,23 +35,35 @@ def calculate_energy(atomic_mass, new_angle, previous_angle, initial_energy):
 #angle = generate_random_angle()
 #path = find_mean_free_path(705*(10**(-24)), 19.1*(10**(-3)), 23.5*(10**(-2)))
 #print(move(path, 0, 0, angle))
-def choose_material(df):
-    material = input("What material do you want to use?")    
-    fission, elastic, capture, total = select_material(material,df)
-    return(fission, elastic, capture, total)
+def choose_material(df,core_materials,current_shell):  
+    material = core_materials[int(current_shell_var)]
+    temp_material = df.loc[material]
+    fission = temp_material['fission']
+    elastic = temp_material['elastic']
+    capture = temp_material['capture']
+    total = temp_material['total'] 
+    density = temp_material['density']
+    atomic_mass = temp_material['mass']
+    return(fission, elastic, capture, total, density, atomic_mass)
     
-def select_material(material,df):
-    fission = df.loc[[material],['fission']]
-    elastic = df.loc[[material],['elastic']]
-    capture = df.loc[[material],['capture']]
-    total = df.loc[[material],['total']]  
-    return [fission, elastic, capture, total]
+def add(shell_radius):
+    add_var = 0
+    for j in range (len(shell_radius)):
+        add_var = add_var + shell_radius[j]
+    return add_var
 
-def is_outside(radius, x, y): #checks neutron has not escpaed
-    if math.sqrt(x*x + y*y) > radius:
-        return(True)
+def current_shell(x, y, current_shell_var,number_of_shells,shell_radius):
+    displacement = math.sqrt(x*x + y*y)
+    if displacement < shell_radius[0]:
+        current_shell_var = 0
+        return current_shell_var
+    elif displacement > shell_radius[len(shell_radius) - 1]:
+        return -1
     else:
-        return(False)
+        for k in range (number_of_shells):
+            if displacement > shell_radius[k] and displacement < shell_radius[k+1]:
+                current_shell_var = k
+                return current_shell_var
     
 def select_event(energy, fission, elastic, capture, total): #classifies interaction dependent on energy and prob
     if energy > 1000000:
@@ -77,7 +91,8 @@ def find_velocity(energy, mass):
 #    number_of_steps = time_step/time_for_one_step
 #    return(int(number_of_steps))
 
-def find_mean_free_path(microscopic_cross_section, density, atomic_mass): #using moderation equations
+def find_mean_free_path(microscopic_cross_section, density, atomic_mass):#using moderation equations
+    choose_material(df,core_materials,current_shell_var)
     atomic_number_density = (density * 6.023 * (10**23))/atomic_mass
     mean_free_path = 1/(microscopic_cross_section * atomic_number_density)
     return mean_free_path
