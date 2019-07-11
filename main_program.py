@@ -44,8 +44,15 @@ for i in range(n_neutrons): #Adds starting values to the arrays
     angles.append(0)
 
 #Get properties for materials
-fission, capture, elastic, total, density, atomic_mass = choose_material(df,core_materials,current_shell_var) #Imports values for chosen material
-path_length = find_mean_free_path(total, density, atomic_mass)
+material_properties = []
+for j in range(number_of_shells):
+    properties = choose_material(df,core_materials[j])
+    properties["path_length"] = find_mean_free_path(properties["total"], \
+                                                  properties["density"], \
+                                                  properties["mass"])
+    material_properties.append(properties)#Imports values for chosen material
+    
+#path_length = find_mean_free_path(total, density, atomic_mass)
 n_time_steps = 100
 reactivities = []
 new_neutrons_per_time_step = 10
@@ -62,18 +69,30 @@ for j in range(n_time_steps):
         time = 0 
         count = 0
         while time < time_step: #Moves neutron until the time exceeds the time_step
-            velocity = find_velocity(energies[i], neutron_mass)
-            time_taken = path_length/(velocity*100) #Time taken for one move
-            time += time_taken #Cumulative time of all moves for this neutron
             angle = generate_random_angle()
-            current_pos = move(path_length, positions[i][0], positions[i][1], angle) #Calculates new position
+            current_shell_var = current_shell(positions[i][0], \
+                                              positions[i][1], \
+                                              number_of_shells, \
+                                              shell_radius)
+            current_properties = material_properties[current_shell_var]
+            velocity = find_velocity(energies[i], neutron_mass)
+            time_taken = current_properties["path_length"]/(velocity*100)
+             #Time taken for one move
+            time += time_taken #Cumulative time of all moves for this neutron
+            current_pos = move(current_properties["path_length"], 
+                               positions[i][0], \
+                               positions[i][1], \
+                               angle) #Calculates new position
             positions[i] = current_pos #Replace old position in the array with the new position
-            event = select_event(energies[i], fission, elastic, capture, total) #Determines interaction type
-            if event == (3) or current_shell(current_pos[0], current_pos[1], current_shell_var,number_of_shells,shell_radius)==-1: #Checks if neutron should be considered 
+            event = select_event(energies[i], current_properties)#Determines interaction type
+            if event == (3) or current_shell_var==-1: #Checks if neutron should be considered 
                 indices_to_remove.append(i) #Adds the position of this neutron to the removal array
                 break
             elif event == (2):#Movement
-                energies[i] = calculate_energy(atomic_mass/avogadro, angle, angles[i], energies[i]) #Set new energy
+                energies[i] = calculate_energy(current_properties["mass"]/avogadro, \
+                                                angle, \
+                                                angles[i], \
+                                                energies[i]) #Set new energy
                 angles[i] = angle
             elif event == 1: #Fission
                 energies.append(2e6) #Set energy of new neutron to 2 MeV
