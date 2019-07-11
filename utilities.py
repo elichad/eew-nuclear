@@ -7,7 +7,6 @@ time_step = 1
 start_pos = (0,0) #starting position
 positions = [] #list of positions
 energies = [] #energies of neutrons in respective positions
-material_names = "U235"
 radius = 5 #radius of nucleus
 energy = 0.025
 properties = [] #list of properties of materials
@@ -28,16 +27,16 @@ def move(mean_free_path, x, y, angle):
 #path = find_mean_free_path(705*(10**(-24)), 19.1*(10**(-3)), 23.5*(10**(-2)))
 #print(move(path, 0, 0, angle))
 def choose_material(df):
-    material = input("What material do you want to use?")    
-    fission, elastic, capture, total = select_material(material,df)
-    return(fission, elastic, capture, total)
+    material = input("What material do you want to use?")  
+    temp_material = df.loc[material]
+    fission = temp_material['fission']
+    elastic = temp_material['elastic']
+    capture = temp_material['capture']
+    total = temp_material['total'] 
+    density = temp_material['density']
+    atomic_mass = temp_material['mass']
+    return(fission, elastic, capture, total, density, atomic_mass)
     
-def select_material(material,df):
-    fission = df.loc[[material],['fission']]
-    elastic = df.loc[[material],['elastic']]
-    capture = df.loc[[material],['capture']]
-    total = df.loc[[material],['total']]  
-    return [fission, elastic, capture, total]
 
 def is_outside(radius, x, y): #checks neutron has not escpaed
     if math.sqrt(x*x + y*y) > radius:

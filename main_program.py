@@ -8,6 +8,7 @@ import numpy as np
 df = pd.read_excel('Nuclear Materials Datasheet.xlsx')
 df = df.set_index('Nuclei')
 ##Define functions
+#print(df)
 
 ##Main Program
 n = 100 #number of neutrons
@@ -27,27 +28,20 @@ for i  in range(n):
     energies.append(start_energy)
     
 
-fission, capture, elastic, total = choose_material(df)
+fission, capture, elastic, total, density, atomic_mass = choose_material(df)
 print(fission)
 print(capture)
 print(elastic)
 print(total)  
-       
-    
-#Material
-U235 = {"fission":590, \
-            "elastic":15, \
-            "capture":100,\
-            "density":0.0191,\
-            "mass":235e-3,\
-            "microscopic_cross_section":705e-24}
+print(density)
 
-path_length = find_mean_free_path(U235["microscopic_cross_section"], U235["density"], U235["mass"])#(microscopic_cross_section, density kg/cm^3, mass of material)
+#Material
+microscopic_cross_section = total * 10**-24
+path_length = find_mean_free_path(microscopic_cross_section, density, atomic_mass)#(microscopic_cross_section, density kg/cm^3, mass of material)
 print(path_length)
 before = len(positions)
 n_time_steps = 4
 reactivities = []
-
 #n_steps = find_number_of_steps(time_step, path_length, start_energy, 1.67e-27) #nanoseconds, cm, eV, mass of a neutron
 for j in range(n_time_steps):
     for i in range(len(positions)):
@@ -78,13 +72,9 @@ for j in range(n_time_steps):
     reactivity = after/before
     reactivities.append(reactivity)
 
-print(reactivities)
+print("reactivities - ", reactivities)
 plt.plot([1, 2, 3, 4], reactivities)
 plt.xticks(np.arange(1, 5, 1)) 
 plt.ylabel("Reactivities")
 plt.xlabel("Number of time steps")
 plt.show()
-    
-    
-    
-    
