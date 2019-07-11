@@ -7,8 +7,7 @@ time_step = 1
 start_pos = (0,0) #starting position
 positions = [] #list of positions
 energies = [] #energies of neutrons in respective positions
-material_names = "U235"
-radius = 5 #radius of nucleus
+angles = [] #angles of neutrons in respective positions anti-clockwise
 energy = 0.025
 properties = [] #list of properties of materials
 mass = 1.67e-27 #mass of neutron (kg)
@@ -23,6 +22,13 @@ def move(mean_free_path, x, y, angle):
     new_xcoordinate = x - mean_free_path * math.sin(angle)
     new_ycoordinate = y + mean_free_path * math.cos(angle)
     return(new_xcoordinate, new_ycoordinate)
+
+def calculate_energy(atomic_mass, new_angle, previous_angle, initial_energy):
+    alpha = ((float(atomic_mass -1)/float(atomic_mass + 1))) ** 2
+    gamma = new_angle - previous_angle
+    delta = ((1+alpha)/2)*((1-alpha)/2)*abs(math.cos(gamma))
+    return(initial_energy * (1-delta))
+    
     
 #angle = generate_random_angle()
 #path = find_mean_free_path(705*(10**(-24)), 19.1*(10**(-3)), 23.5*(10**(-2)))
@@ -47,16 +53,16 @@ def is_outside(radius, x, y): #checks neutron has not escpaed
     
 def select_event(energy, fission, elastic, capture, total): #classifies interaction dependent on energy and prob
     if energy > 1000000:
-        return 2
+        return 2 #Elastic
     elif energy < 0.001:
-        return 3
+        return 3 #Capture
     else:
         random_number = random.randint(1, total)
-        if random_number < fission:
+        if random_number < fission: 
             return 1
-        elif random_number < fission + elastic and random_number > fission:
+        elif random_number < fission + elastic and random_number > fission: 
             return 2
-        else:
+        else: 
             return 3
         
 #print(select_event(0.025, 590, 15, 100, 705))
