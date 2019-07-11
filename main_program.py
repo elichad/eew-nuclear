@@ -67,7 +67,7 @@ for j in range(n_time_steps):
                 positions.append(positions[i])
             elif event == (2):#Movement
                 energies[i] = 2/(3*235) * energies[i]
-            elif event == (3) or current_shell(x, y, current_shell_var):
+            elif event == (3) or current_shell(x, y, current_shell_var,number_of_shells,shell_radius):
                 positions.pop(i)
                 energies.pop(i)
                 break

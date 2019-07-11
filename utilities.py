@@ -44,7 +44,7 @@ def add(shell_radius):
         add_var = add_var + shell_radius[j]
     return add_var
 
-def current_shell(x, y, current_shell_var):
+def current_shell(x, y, current_shell_var,number_of_shells,shell_radius):
     displacement = math.sqrt(x*x + y*y)
     if displacement < shell_radius[0]:
         current_shell_var = 0
