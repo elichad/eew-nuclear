@@ -4,19 +4,28 @@ import math
 from utilities import *
 import matplotlib.pyplot as plt
 import numpy as np
-
+shell_radius =[]
 df = pd.read_excel('Nuclear Materials Datasheet.xlsx')
 df = df.set_index('Nuclei')
-
-number_of_shells = 2
-core_materials = ['U235', 'Fe56']
-shell_radius = [5, 15]
+print("How many shells do you want to simulate (including core)?")
+number_of_shells = input()
+number_of_shells = int(number_of_shells)
+for m in range (number_of_shells):
+    print("what material would you like layer", m, "to be made of?")    
+    core_materials.append(input())
+for n in range (number_of_shells):
+    print("what would you like the radius of shell", n, "to be? (from centre of core)")
+    temporary = input()
+    temporary = float(temporary)
+    shell_radius.append(temporary)
+print("How many neutrons do you want to simulate?")
+n = input()
+n = int(n)
 current_shell_var = 0
 ##Define functions
 #print(df)
 
 ##Main Program
-n = 10 #initial number of neutrons
 time_step = 1e-10 #seconds
 avogadro = 6.02e26 #Avogadro's Number
 neutron_mass = 1.67e-27 #kg
