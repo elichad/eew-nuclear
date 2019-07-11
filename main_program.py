@@ -7,6 +7,11 @@ import numpy as np
 
 df = pd.read_excel('Nuclear Materials Datasheet.xlsx')
 df = df.set_index('Nuclei')
+
+number_of_shells = 2
+core_materials = ['U235', 'Fe56']
+shell_radius = [5, 15]
+current_shell_var = 0
 ##Define functions
 #print(df)
 
@@ -28,7 +33,7 @@ for i  in range(n):
     energies.append(start_energy)
     
 
-fission, capture, elastic, total, density, atomic_mass = choose_material(df)
+fission, capture, elastic, total, density, atomic_mass = choose_material(df,core_materials,current_shell_var)
 print(fission)
 print(capture)
 print(elastic)
@@ -62,7 +67,7 @@ for j in range(n_time_steps):
                 positions.append(positions[i])
             elif event == (2):#Movement
                 energies[i] = 2/(3*235) * energies[i]
-            elif event == (3) or isOutside(0.5, current_pos[0], current_pos[1]): #Capture
+            elif event == (3) or current_shell(x, y, current_shell_var):
                 positions.pop(i)
                 energies.pop(i)
                 break
