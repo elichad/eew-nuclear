@@ -1,6 +1,7 @@
 import random
 import math
 import pandas as pd
+"""
 df = pd.read_excel('Nuclear Materials Datasheet.xlsx')
 df = df.set_index('Nuclei')
 core_materials = ['U235', 'Fe56']
@@ -16,6 +17,7 @@ mass = 1.67e-27 #mass of neutron (kg)
 new_xcoordinate = 0
 new_ycoordinate = 0
 current_shell_var = 0
+"""
 def generate_random_angle():
     angle = random.uniform(0, 2*math.pi) #in radians
     return angle
@@ -35,7 +37,7 @@ def calculate_energy(atomic_mass, new_angle, previous_angle, initial_energy):
 #angle = generate_random_angle()
 #path = find_mean_free_path(705*(10**(-24)), 19.1*(10**(-3)), 23.5*(10**(-2)))
 #print(move(path, 0, 0, angle))
-def choose_material(df,core_materials,current_shell):  
+def choose_material(df,core_materials,current_shell_var):  
     material = core_materials[int(current_shell_var)]
     temp_material = df.loc[material]
     fission = temp_material['fission']
@@ -92,7 +94,8 @@ def find_velocity(energy, mass):
 #    return(int(number_of_steps))
 
 def find_mean_free_path(microscopic_cross_section, density, atomic_mass):#using moderation equations
-    choose_material(df,core_materials,current_shell_var)
+    #choose_material(df,core_materials,current_shell_var)
+    microscopic_cross_section = microscopic_cross_section * 10**-24 #cm^2
     atomic_number_density = (density * 6.023 * (10**23))/atomic_mass
     mean_free_path = 1/(microscopic_cross_section * atomic_number_density)
     return mean_free_path

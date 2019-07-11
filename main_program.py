@@ -12,6 +12,7 @@ df = df.set_index('Nuclei')
 print("How many shells do you want to simulate (including core)?")
 number_of_shells = input()
 number_of_shells = int(number_of_shells)
+core_materials = []
 for m in range (number_of_shells):
     print("what material would you like layer", m, "to be made of?")    
     core_materials.append(input())
@@ -21,14 +22,14 @@ for n in range (number_of_shells):
     temporary = float(temporary)
     shell_radius.append(temporary)
 print("How many neutrons do you want to simulate?")
-n = input()
-n = int(n)
+n_neutrons = input()
+n_neutrons = int(n_neutrons)
 current_shell_var = 0
 
-n = 10 #initial number of neutrons
+#n = 10 #initial number of neutrons
 
 time_step = 1e-10 #seconds
-avogadro = 6.02e26 #Avogadro's Number
+avogadro = 6.02e23 #Avogadro's Number
 neutron_mass = 1.67e-27 #kg
 
 #Create lists for modelling neutrons
@@ -37,22 +38,22 @@ energies = []
 angles = [] #rad
 start_pos = 0, 0 #x, y in m
 positions = []
-for i in range(n): #Adds starting values to the arrays
+for i in range(n_neutrons): #Adds starting values to the arrays
     positions.append(start_pos)
     energies.append(start_energy)
     angles.append(0)
 
 #Get properties for materials
 fission, capture, elastic, total, density, atomic_mass = choose_material(df,core_materials,current_shell_var) #Imports values for chosen material
-total = total * 10**-24 #cm^2
 path_length = find_mean_free_path(total, density, atomic_mass)
 n_time_steps = 100
 reactivities = []
+new_neutrons_per_time_step = 10
 
 #Loops for each time step
 for j in range(n_time_steps):
     indices_to_remove = []
-    for i in range(10): #Simulation of neutron source - adds in 10 neutrons every time step
+    for i in range(new_neutrons_per_time_step): #Simulation of neutron source
         positions.append(start_pos)
         energies.append(start_energy)
         angles.append(0)
