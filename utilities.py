@@ -71,17 +71,18 @@ def select_event(energy, fission, elastic, capture, total): #classifies interact
     if energy > 1000000:
         return 2 #Elastic
     elif energy < 0.001:
+        print("Energy too low")
         return 3 #Capture
     else:
-        random_number = random.randint(1, total)
-        if random_number < fission: 
+        random_number = random.randint(1, int(total*100))
+        if random_number < fission*100: 
             return 1
-        elif random_number < fission + elastic and random_number > fission: 
+        elif (random_number < (fission*100 + elastic*100)) and (random_number > (fission*100)): 
             return 2
         else: 
             return 3
         
-#print(select_event(0.025, 590, 15, 100, 705))
+print(select_event(0.025, 590, 15, 100, 705))
 def find_velocity(energy, mass):
     joules = energy * 1.6e-19
     velocity = math.sqrt(2*joules/mass) #using KE equation
@@ -95,9 +96,11 @@ def find_velocity(energy, mass):
 
 def find_mean_free_path(microscopic_cross_section, density, atomic_mass):#using moderation equations
     #choose_material(df,core_materials,current_shell_var)
-    microscopic_cross_section = microscopic_cross_section * 10**-24 #cm^2
-    atomic_number_density = (density * 6.023 * (10**23))/atomic_mass
-    mean_free_path = 1/(microscopic_cross_section * atomic_number_density)
+    #density = density*10**-3 #Converts density to kg/cm^3
+    #atomic_mass = atomic_mass * 10**-2
+    microscopic_cross_section = microscopic_cross_section * 10**-24 #cm^-2
+    atomic_number_density = (density * 6.023 * (10**23))/atomic_mass #atoms/cm^2
+    mean_free_path = 1/(100 * microscopic_cross_section * atomic_number_density)  #metres
     return mean_free_path
 
 #print(find_mean_free_path(705*(10**(-24)), 19.1*(10**(-3)), 23.5*(10**(-2))))

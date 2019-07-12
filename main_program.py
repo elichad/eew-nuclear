@@ -44,11 +44,15 @@ for i in range(n_neutrons): #Adds starting values to the arrays
     angles.append(0)
 
 #Get properties for materials
-fission, capture, elastic, total, density, atomic_mass = choose_material(df,core_materials,current_shell_var) #Imports values for chosen material
+fission, elastic, capture, total, density, atomic_mass = choose_material(df,core_materials,current_shell_var) #Imports values for chosen material
 path_length = find_mean_free_path(total, density, atomic_mass)
-n_time_steps = 100
+print(path_length)
+n_time_steps = 10
 reactivities = []
 new_neutrons_per_time_step = 10
+
+number_fission_events=0
+number_loss_events=0
 
 #Loops for each time step
 for j in range(n_time_steps):
@@ -71,24 +75,30 @@ for j in range(n_time_steps):
             event = select_event(energies[i], fission, elastic, capture, total) #Determines interaction type
             if event == (3) or current_shell(current_pos[0], current_pos[1], current_shell_var,number_of_shells,shell_radius)==-1: #Checks if neutron should be considered 
                 indices_to_remove.append(i) #Adds the position of this neutron to the removal array
+                number_loss_events+=1
+                print("Neutron lost", number_loss_events)
                 break
             elif event == (2):#Movement
                 energies[i] = calculate_energy(atomic_mass/avogadro, angle, angles[i], energies[i]) #Set new energy
                 angles[i] = angle
-            elif event == 1: #Fission
+            elif event == (1): #Fission
                 energies.append(2e6) #Set energy of new neutron to 2 MeV
                 energies[i] = 2e6 #Set energy of current neutron to 2 MeV
                 positions.append(positions[i]) #Moves new neutron to current neutron
                 angles.append(angle) 
-                
+                number_fission_events+=1
+                print('neutron fission',number_fission_events)
+    print('generation number',j)
     reverse_indices_to_remove = indices_to_remove[::-1] #Reverses removal array so indices are unaffected by item removal
     for i in reverse_indices_to_remove: #Removes all neutron properties from lists
         energies.pop(i)
         angles.pop(i)
         positions.pop(i)
             
-    after = len(positions) #Neutrons after time step has finished
-    reactivity = after/before
+    after = len(positions)
+    print("Number before:", before)
+    print("Number after:", after)#Neutrons after time step has finished
+    reactivity = float(after)/float(before)
     reactivities.append(reactivity)
 
 plt.plot(range(n_time_steps), reactivities)
