@@ -121,6 +121,6 @@ for j in range(n_time_steps):
     reactivities.append(reactivity)
 
 plt.plot(range(n_time_steps), reactivities)
-plt.ylabel("Reactivities")
+plt.ylabel("Criticalities")
 plt.xlabel("Number of time steps")
 plt.show()
