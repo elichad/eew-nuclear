@@ -80,14 +80,13 @@ def current_shell(x, y, number_of_shells,shell_radius):
     else:
         for k in range (number_of_shells):
             if displacement > shell_radius[k] and displacement < shell_radius[k+1]:
-                current_shell_var = k
+                current_shell_var = k+1
                 return current_shell_var
     
 def select_event(energy, material_properties): #classifies interaction dependent on energy and prob
     if energy > 1000000:
         return 2 #Elastic
     elif energy < 0.001:
-        print("Energy too low")
         return 3 #Capture
     else:
         random_number = random.randint(1, material_properties["total"]*100)

@@ -72,8 +72,6 @@ for j in range(n_time_steps):
         time = 0 
         count = 0
         while time < time_step: #Moves neutron until the time exceeds the time_step
-            if i==0:
-                count+=1
             angle = generate_random_angle()
             current_shell_var = current_shell(positions[i][0], \
                                               positions[i][1], \
