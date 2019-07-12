@@ -120,7 +120,11 @@ for j in range(n_time_steps):
     reactivity = float(after)/float(before)
     reactivities.append(reactivity)
 
+fig = plt.figure(figsize=(8,6))
 plt.plot(range(n_time_steps), reactivities)
-plt.ylabel("Criticalities")
-plt.xlabel("Number of time steps")
+plt.xticks(fontsize='16')
+plt.yticks(fontsize='16')
+plt.ylabel("Criticality",fontsize='22')
+plt.xlabel("Number of time steps",fontsize='22')
+fig.savefig("criticality.png")
 plt.show()
