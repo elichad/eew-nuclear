@@ -21,14 +21,14 @@ for n in range (number_of_shells):
     temporary = input()
     temporary = float(temporary)
     shell_radius.append(temporary)
-print("How many neutrons do you want to simulate?")
+print("How many neutrons do you want to add per time step?")
 n_neutrons = input()
 n_neutrons = int(n_neutrons)
 current_shell_var = 0
 
 #n = 10 #initial number of neutrons
 
-time_step = 1e-10 #seconds
+time_step = 1e-9 #seconds
 avogadro = 6.02e23 #Avogadro's Number
 neutron_mass = 1.67e-27 #kg
 
@@ -53,9 +53,9 @@ for j in range(number_of_shells):
     material_properties.append(properties)#Imports values for chosen material
     
 #path_length = find_mean_free_path(total, density, atomic_mass)
-n_time_steps = 10
+n_time_steps = 20
 reactivities = []
-new_neutrons_per_time_step = 10
+new_neutrons_per_time_step = n_neutrons
 
 number_fission_events=0
 number_loss_events=0
@@ -72,6 +72,8 @@ for j in range(n_time_steps):
         time = 0 
         count = 0
         while time < time_step: #Moves neutron until the time exceeds the time_step
+            if i==0:
+                count+=1
             angle = generate_random_angle()
             current_shell_var = current_shell(positions[i][0], \
                                               positions[i][1], \
@@ -79,7 +81,7 @@ for j in range(n_time_steps):
                                               shell_radius)
             current_properties = material_properties[current_shell_var]
             velocity = find_velocity(energies[i], neutron_mass)
-            time_taken = current_properties["path_length"]/(velocity*100)
+            time_taken = current_properties["path_length"]/(velocity)
              #Time taken for one move
             time += time_taken #Cumulative time of all moves for this neutron
             current_pos = move(current_properties["path_length"], 
@@ -91,10 +93,10 @@ for j in range(n_time_steps):
             if event == (3) or current_shell_var==-1: #Checks if neutron should be considered 
                 indices_to_remove.append(i) #Adds the position of this neutron to the removal array
                 number_loss_events+=1
-                print("Neutron lost", number_loss_events)
+                #print("Neutron lost", number_loss_events)
                 break
             elif event == (2):#Movement
-                energies[i] = calculate_energy(current_properties["mass"]/avogadro, \
+                energies[i] = calculate_energy(current_properties["mass"], \
                                                 angle, \
                                                 angles[i], \
                                                 energies[i]) #Set new energy
@@ -105,8 +107,9 @@ for j in range(n_time_steps):
                 positions.append(positions[i]) #Moves new neutron to current neutron
                 angles.append(angle) 
                 number_fission_events+=1
-                print('neutron fission',number_fission_events)
+                #print('neutron fission',number_fission_events)
     print('generation number',j)
+    print('count', i)
     reverse_indices_to_remove = indices_to_remove[::-1] #Reverses removal array so indices are unaffected by item removal
     for i in reverse_indices_to_remove: #Removes all neutron properties from lists
         energies.pop(i)
